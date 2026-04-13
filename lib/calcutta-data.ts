@@ -1,0 +1,186 @@
+export interface Golfer {
+  name: string;
+  tier: "solo" | "bundle2" | "bundle3" | "bundle4" | "bundle78" | "amateur";
+  paid: number;
+}
+
+export interface Team {
+  id: string;
+  name: string;
+  members: string[];
+  color: string;
+  golfers: Golfer[];
+}
+
+export const TEAMS: Team[] = [
+  {
+    id: "the-majors",
+    name: "The Majors",
+    members: ["Alex", "Morgan", "Jordan"],
+    color: "bg-blue-700",
+    golfers: [
+      { name: "Scottie Scheffler", tier: "solo", paid: 0 },
+      { name: "Bryson DeChambeau", tier: "solo", paid: 0 },
+      { name: "Ryan Fox", tier: "solo", paid: 0 },
+      { name: "Wyndham Clark", tier: "solo", paid: 0 },
+      { name: "Michael Kim", tier: "solo", paid: 0 },
+      { name: "Max Greyserman", tier: "solo", paid: 0 },
+    ],
+  },
+  {
+    id: "eagle-squadron",
+    name: "Eagle Squadron",
+    members: ["Casey", "Riley", "Taylor"],
+    color: "bg-red-700",
+    golfers: [
+      { name: "Jon Rahm", tier: "solo", paid: 0 },
+      { name: "Min Woo Lee", tier: "solo", paid: 0 },
+      { name: "Justin Rose", tier: "solo", paid: 0 },
+      { name: "Akshay Bhatia", tier: "solo", paid: 0 },
+      { name: "Patrick Cantlay", tier: "solo", paid: 0 },
+      { name: "Adam Scott", tier: "solo", paid: 0 },
+    ],
+  },
+  {
+    id: "fairway-kings",
+    name: "Fairway Kings",
+    members: ["Jamie", "Drew", "Avery"],
+    color: "bg-teal-700",
+    golfers: [
+      { name: "Rory McIlroy", tier: "solo", paid: 0 },
+      { name: "Matt Fitzpatrick", tier: "solo", paid: 0 },
+      { name: "Jordan Spieth", tier: "solo", paid: 0 },
+      { name: "Patrick Reed", tier: "solo", paid: 0 },
+      { name: "Harris English", tier: "solo", paid: 0 },
+      { name: "Gary Woodland", tier: "solo", paid: 0 },
+      { name: "Daniel Berger", tier: "solo", paid: 0 },
+      { name: "Ethan Fang", tier: "amateur", paid: 0 },
+      { name: "Jackson Herrington", tier: "amateur", paid: 0 },
+      { name: "Brandon Holtz", tier: "amateur", paid: 0 },
+      { name: "Mason Howell", tier: "amateur", paid: 0 },
+      { name: "Fifa Laopakdee", tier: "amateur", paid: 0 },
+      { name: "Mateo Pulcini", tier: "amateur", paid: 0 },
+    ],
+  },
+  {
+    id: "green-jackets",
+    name: "Green Jackets",
+    members: ["Quinn", "Parker", "Blake"],
+    color: "bg-green-700",
+    golfers: [
+      { name: "Ludvig Aberg", tier: "solo", paid: 0 },
+      { name: "Tommy Fleetwood", tier: "solo", paid: 0 },
+      { name: "Viktor Hovland", tier: "solo", paid: 0 },
+      { name: "Russell Henley", tier: "solo", paid: 0 },
+      { name: "Maverick McNealy", tier: "solo", paid: 0 },
+      { name: "Jacob Bridgeman", tier: "solo", paid: 0 },
+      { name: "Kurt Kitayama", tier: "solo", paid: 0 },
+      { name: "Ben Griffin", tier: "solo", paid: 0 },
+      { name: "Cameron Smith", tier: "solo", paid: 0 },
+      { name: "Sungjae Im", tier: "solo", paid: 0 },
+      { name: "Max Homa", tier: "solo", paid: 0 },
+      { name: "Brian Campbell", tier: "amateur", paid: 0 },
+      { name: "Danny Willett", tier: "solo", paid: 0 },
+      { name: "Angel Cabrera", tier: "solo", paid: 0 },
+      { name: "Naoyuki Kataoka", tier: "solo", paid: 0 },
+      { name: "Vijay Singh", tier: "solo", paid: 0 },
+      { name: "Mike Weir", tier: "solo", paid: 0 },
+      { name: "Fred Couples", tier: "solo", paid: 0 },
+      { name: "Jose Maria Olazabal", tier: "solo", paid: 0 },
+    ],
+  },
+  {
+    id: "the-back-nine",
+    name: "The Back Nine",
+    members: ["Reese", "Sage", "River"],
+    color: "bg-pink-700",
+    golfers: [
+      { name: "Xander Schauffele", tier: "solo", paid: 0 },
+      { name: "Cameron Young", tier: "solo", paid: 0 },
+      { name: "Brooks Koepka", tier: "solo", paid: 0 },
+      { name: "Chris Gotterup", tier: "solo", paid: 0 },
+      { name: "Ryan Gerard", tier: "solo", paid: 0 },
+      { name: "Alex Noren", tier: "solo", paid: 0 },
+      { name: "Sam Stevens", tier: "solo", paid: 0 },
+      { name: "Nick Taylor", tier: "solo", paid: 0 },
+      { name: "Aldrich Potgieter", tier: "solo", paid: 0 },
+      { name: "Michael Brennan", tier: "solo", paid: 0 },
+      { name: "John Keefer", tier: "solo", paid: 0 },
+      { name: "Bubba Watson", tier: "solo", paid: 0 },
+      { name: "Zach Johnson", tier: "solo", paid: 0 },
+      { name: "Charl Schwartzel", tier: "solo", paid: 0 },
+      { name: "Davis Riley", tier: "solo", paid: 0 },
+    ],
+  },
+  {
+    id: "iron-legends",
+    name: "Iron Legends",
+    members: ["Finley", "Harper", "Elliott"],
+    color: "bg-yellow-700",
+    golfers: [
+      { name: "Collin Morikawa", tier: "solo", paid: 0 },
+      { name: "Robert MacIntyre", tier: "solo", paid: 0 },
+      { name: "Jason Day", tier: "solo", paid: 0 },
+      { name: "Jake Knapp", tier: "solo", paid: 0 },
+      { name: "Shane Lowry", tier: "solo", paid: 0 },
+      { name: "Rasmus Hojgaard", tier: "solo", paid: 0 },
+      { name: "Keegan Bradley", tier: "solo", paid: 0 },
+      { name: "Marco Penge", tier: "solo", paid: 0 },
+      { name: "Harry Hall", tier: "solo", paid: 0 },
+      { name: "Tom McKibbin", tier: "solo", paid: 0 },
+      { name: "Haotong Li", tier: "solo", paid: 0 },
+      { name: "Matt McCarty", tier: "solo", paid: 0 },
+      { name: "Andrew Novak", tier: "solo", paid: 0 },
+      { name: "Nicolas Echavarria", tier: "solo", paid: 0 },
+      { name: "Rasmus Neergaard-Petersen", tier: "solo", paid: 0 },
+      { name: "Sami Valimaki", tier: "solo", paid: 0 },
+    ],
+  },
+  {
+    id: "birdie-brigade",
+    name: "Birdie Brigade",
+    members: ["Brooks", "Lane", "Piper"],
+    color: "bg-orange-700",
+    golfers: [
+      { name: "Hideki Matsuyama", tier: "solo", paid: 0 },
+      { name: "Sam Burns", tier: "solo", paid: 0 },
+      { name: "JJ Spaun", tier: "solo", paid: 0 },
+      { name: "Sepp Straka", tier: "solo", paid: 0 },
+      { name: "Tyrrell Hatton", tier: "solo", paid: 0 },
+      { name: "Nicolai Hojgaard", tier: "solo", paid: 0 },
+      { name: "Corey Conners", tier: "solo", paid: 0 },
+      { name: "Brian Harman", tier: "solo", paid: 0 },
+      { name: "Aaron Rai", tier: "solo", paid: 0 },
+      { name: "Kristoffer Reitan", tier: "solo", paid: 0 },
+      { name: "Sergio Garcia", tier: "solo", paid: 0 },
+      { name: "Casey Jarvis", tier: "solo", paid: 0 },
+      { name: "Carlos Ortiz", tier: "solo", paid: 0 },
+      { name: "Dustin Johnson", tier: "solo", paid: 0 },
+    ],
+  },
+  {
+    id: "the-aces",
+    name: "The Aces",
+    members: ["Dallas", "Hayden"],
+    color: "bg-purple-700",
+    golfers: [
+      { name: "Si Woo Kim", tier: "solo", paid: 0 },
+      { name: "Justin Thomas", tier: "solo", paid: 0 },
+    ],
+  },
+];
+
+export const PRIZE_STRUCTURE = {
+  totalPot: 4001,
+  payouts: [
+    { label: "1st place",        pct: 0.50, amount: 2000.50 },
+    { label: "2nd place",        pct: 0.20, amount: 800.20 },
+    { label: "3rd place",        pct: 0.10, amount: 400.10 },
+    { label: "4th place",        pct: 0.05, amount: 200.05 },
+    { label: "1st round leader", pct: 0.03, amount: 0, note: "$60.02 each (split)", winners: "Green Jackets · Iron Legends" },
+    { label: "2nd round leader", pct: 0.04, amount: 160.04 },
+    { label: "3rd round leader", pct: 0.05, amount: 200.05 },
+    { label: "Low Sunday round", pct: 0.03, amount: 120.03 },
+    { label: "Hole in one",      pct: 1.00, amount: 0, note: "$5 from every member" },
+  ],
+};
