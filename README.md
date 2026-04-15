@@ -1,6 +1,6 @@
 # Calcutta Golf Tournament Tracker
 
-A real-time tournament management app built for a Calcutta-style golf auction, used live during the 2025 Masters. Participants draft teams of PGA Tour players and compete for prize payouts based on tournament performance, with a bonus points system that triggers on notable scoring events.
+A real-time tournament management app built for a Calcutta-style golf auction, used live during the 2026 Masters. Participants draft teams of PGA Tour players and compete for prize payouts based on tournament performance, with a bonus points system that triggers on notable scoring events.
 
 ## What is a Calcutta?
 
