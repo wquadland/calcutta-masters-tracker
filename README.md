@@ -65,7 +65,7 @@ The app is deployed and publicly accessible at:
 
 **[https://calcutta-app-kappa.vercel.app](https://calcutta-app-kappa.vercel.app)**
 
-The live version is connected to the real Supabase database and pulls live scoring from the ESPN API. Admin actions (logging point events) require SMS OTP authentication.
+The live version pulls scoring from the ESPN API and persists data to Supabase. To explore the admin panel without a registered phone number, open it via the ⭐ button and click **Continue as Demo** — this bypasses SMS OTP and loads a set of example scoring events you can assign and log. In the real deployment, each participant authenticates with a 6-digit SMS code via Twilio Verify before logging events.
 
 ## Local Development
 
