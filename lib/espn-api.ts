@@ -10,10 +10,40 @@ export interface GolferResult {
   roundScores: string[];
 }
 
+export type EventStatus = "live" | "upcoming" | "complete";
+
 export interface LeaderboardResult {
   golfers: GolferResult[];
   error: boolean;
   lastFetched: string;
+  eventStatus: EventStatus;
+  nextEventDate: string | null;
+  eventName: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function parseEventMeta(data: any): { eventStatus: EventStatus; nextEventDate: string | null; eventName: string } {
+  try {
+    const events = data?.events;
+    if (!events || events.length === 0) return { eventStatus: "complete", nextEventDate: null, eventName: "" };
+
+    const event = events.find((e: { name?: string }) =>
+      e.name?.toLowerCase().includes("masters")
+    ) ?? events[0];
+
+    const state: string = event?.status?.type?.state ?? "post";
+    const eventName: string = event?.name ?? event?.shortName ?? "";
+    const eventDate: string | null = event?.date ?? null;
+
+    let eventStatus: EventStatus;
+    if (state === "in") eventStatus = "live";
+    else if (state === "pre") eventStatus = "upcoming";
+    else eventStatus = "complete";
+
+    return { eventStatus, nextEventDate: eventDate, eventName };
+  } catch {
+    return { eventStatus: "complete", nextEventDate: null, eventName: "" };
+  }
 }
 
 function parseScoreToPar(scoreStr: string | undefined): { display: string; numeric: number } {

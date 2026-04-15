@@ -57,6 +57,7 @@ interface TriggerGroup {
   type: "EAGLE" | "BIRDIE" | "EAGLE_BIRDIE";
   reason: string;
   slots: PendingSlot[];
+  isDemo: boolean;
 }
 
 const AUTH_KEY = "calcutta_admin_member";
@@ -169,6 +170,7 @@ export default function PointsAdminModal({ onClose, onAdd }: Props) {
             type: slot.type,
             reason: slot.reason,
             slots: [],
+            isDemo: slot.isDemo ?? false,
           });
         }
         groupMap.get(slot.triggerKey)!.slots.push(slot);
@@ -215,15 +217,34 @@ export default function PointsAdminModal({ onClose, onAdd }: Props) {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const logEvent = async (body: object): Promise<PointEvent | null> => {
-    const res = await fetch("/api/points", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    const data = await res.json();
-    if (data.event) { onAdd(data.event); return data.event; }
-    return null;
+  const logEvent = async (body: Record<string, unknown>): Promise<PointEvent> => {
+    const fallback: PointEvent = {
+      id: `local-${Date.now()}-${Math.random()}`,
+      golfer: (body.golfer as string) ?? "",
+      reason: (body.reason as string) ?? "",
+      round: Number(body.round) || 1,
+      hole: Number(body.hole) || 0,
+      earnedByTeam: (body.earnedByTeam as string) ?? "",
+      assignedByMember: (body.assignedByMember as string) ?? "",
+      assignedTo: (body.assignedTo as string) ?? "",
+      timestamp: new Date().toISOString(),
+      isComplete: false,
+    };
+    try {
+      const res = await fetch("/api/points", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) { onAdd(fallback); return fallback; }
+      const data = await res.json();
+      const event = data.event ?? fallback;
+      onAdd(event);
+      return event;
+    } catch {
+      onAdd(fallback);
+      return fallback;
+    }
   };
 
   const handleQuickLog = async (slot: PendingSlot) => {
@@ -307,6 +328,21 @@ export default function PointsAdminModal({ onClose, onAdd }: Props) {
                   >
                     {sending ? "Sending…" : "Send Code"}
                   </button>
+                  <div className="flex flex-col items-center gap-1.5 pt-2 border-t border-white/10 w-full">
+                    <button
+                      onClick={() => {
+                        localStorage.setItem(AUTH_KEY, "Demo");
+                        setLoggedInMember("Demo");
+                        setAuthed(true);
+                      }}
+                      className="text-gray-400 hover:text-white text-xs underline underline-offset-2 transition-colors"
+                    >
+                      Continue as Demo
+                    </button>
+                    <p className="text-gray-600 text-[10px] text-center max-w-[200px]">
+                      In the live version, participants authenticate via SMS code before logging events.
+                    </p>
+                  </div>
                 </>
               )}
 
@@ -393,6 +429,9 @@ export default function PointsAdminModal({ onClose, onAdd }: Props) {
                               {group.type === "EAGLE_BIRDIE" ? "EAGLE+BIRDIE ×2" : group.type}
                             </span>
                             <span className="text-white text-sm font-semibold flex-1 truncate">{group.golfer}</span>
+                            {group.isDemo && (
+                              <span className="text-[9px] font-semibold text-gray-500 border border-white/10 px-1 py-0.5 rounded flex-shrink-0">DEMO</span>
+                            )}
                             <span className="text-gray-500 text-xs flex-shrink-0">R{group.round}·H{group.hole}</span>
                           </div>
                           <div className="px-3 pb-1 pt-0.5">

@@ -23,6 +23,41 @@ export interface PendingSlot {
   assignedByMember: string; // which team member this slot belongs to
   alreadyLogged: boolean;
   count: number;         // 2 for eagle-on-birdie-hole, 1 otherwise
+  isDemo?: boolean;      // true for static demo slots shown outside active tournaments
+}
+
+// Static demo slots shown when no live ESPN events are detected
+const DEMO_EVENTS: Array<{ golfer: string; team: string; round: number; hole: number; type: PendingSlot["type"]; reason: string; count: number }> = [
+  { golfer: "Scottie Scheffler", team: "The Majors",     round: 2, hole: 7,  type: "EAGLE",       reason: "Eagle",                   count: 1 },
+  { golfer: "Rory McIlroy",      team: "Eagle Squadron", round: 1, hole: 2,  type: "BIRDIE",      reason: "Birdie - Hole 2 (Thu)",    count: 1 },
+  { golfer: "Collin Morikawa",   team: "Fairway Kings",  round: 3, hole: 12, type: "EAGLE_BIRDIE",reason: "Eagle on Birdie Hole 12 (Sat)", count: 2 },
+];
+
+function buildDemoSlots(loggedSet: Set<string>): PendingSlot[] {
+  const slots: PendingSlot[] = [];
+  for (const ev of DEMO_EVENTS) {
+    const teamObj = TEAMS.find((t) => t.name === ev.team);
+    const members = teamObj?.members ?? ["Alex", "Morgan"];
+    for (const member of members) {
+      const triggerKey = `demo-${ev.golfer.replace(/\s/g, "")}-${ev.round}-${ev.hole}`;
+      const id = `${triggerKey}-${member.toLowerCase().replace(/\s/g, "")}`;
+      slots.push({
+        id,
+        triggerKey,
+        golfer: ev.golfer,
+        team: ev.team,
+        round: ev.round,
+        hole: ev.hole,
+        type: ev.type,
+        reason: ev.reason,
+        assignedByMember: member,
+        alreadyLogged: loggedSet.has(`${normalizeName(ev.golfer)}-${ev.round}-${ev.hole}-${normalizeName(member)}`),
+        count: ev.count,
+        isDemo: true,
+      });
+    }
+  }
+  return slots;
 }
 
 function normalizeName(s: string) {
@@ -171,17 +206,22 @@ export async function GET() {
       ),
     }));
 
+    // If ESPN detected no real events, append static demo slots so the UI is always demonstrable
+    const finalSlots = withStatus.length === 0
+      ? buildDemoSlots(loggedSet)
+      : withStatus;
+
     // Sort: pending first, then by round/hole/member
-    withStatus.sort((a, b) => {
+    finalSlots.sort((a, b) => {
       if (a.alreadyLogged !== b.alreadyLogged) return a.alreadyLogged ? 1 : -1;
       if (a.round !== b.round) return a.round - b.round;
       if (a.hole !== b.hole) return a.hole - b.hole;
       return a.assignedByMember.localeCompare(b.assignedByMember);
     });
 
-    return NextResponse.json({ slots: withStatus });
+    return NextResponse.json({ slots: finalSlots });
   } catch (err) {
     console.error("pending-points error:", err);
-    return NextResponse.json({ slots: [] });
+    return NextResponse.json({ slots: buildDemoSlots(new Set()) });
   }
 }

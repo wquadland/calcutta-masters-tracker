@@ -1,14 +1,35 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { EventStatus } from "@/lib/espn-api";
 
 interface Props {
   lastFetched: string | null;
   onAdminClick: () => void;
+  eventStatus: EventStatus;
+  nextEventDate: string | null;
 }
 
-export default function Header({ lastFetched, onAdminClick }: Props) {
+function useCountdown(targetDate: string | null) {
+  const [daysLeft, setDaysLeft] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!targetDate) { setDaysLeft(null); return; }
+    const update = () => {
+      const diff = new Date(targetDate).getTime() - Date.now();
+      setDaysLeft(diff > 0 ? Math.ceil(diff / (1000 * 60 * 60 * 24)) : 0);
+    };
+    update();
+    const id = setInterval(update, 60_000);
+    return () => clearInterval(id);
+  }, [targetDate]);
+
+  return daysLeft;
+}
+
+export default function Header({ lastFetched, onAdminClick, eventStatus, nextEventDate }: Props) {
   const [secondsAgo, setSecondsAgo] = useState<number | null>(null);
+  const daysLeft = useCountdown(eventStatus !== "live" ? nextEventDate : null);
 
   useEffect(() => {
     if (!lastFetched) return;
@@ -32,10 +53,21 @@ export default function Header({ lastFetched, onAdminClick }: Props) {
         <h1 className="text-xl md:text-2xl font-extrabold tracking-tight text-white">
           2025 Masters Calcutta
         </h1>
-        <span className="flex items-center gap-1.5 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full animate-pulse">
-          <span className="w-1.5 h-1.5 bg-white rounded-full inline-block" />
-          LIVE
-        </span>
+
+        {eventStatus === "live" ? (
+          <span className="flex items-center gap-1.5 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full animate-pulse">
+            <span className="w-1.5 h-1.5 bg-white rounded-full inline-block" />
+            LIVE
+          </span>
+        ) : daysLeft !== null ? (
+          <span className="flex items-center gap-1.5 bg-white/10 text-gray-300 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+            ⛳ Next event in {daysLeft}d
+          </span>
+        ) : (
+          <span className="flex items-center gap-1.5 bg-white/10 text-gray-400 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+            ⛳ Between events
+          </span>
+        )}
       </div>
 
       <div className="flex items-center gap-3">

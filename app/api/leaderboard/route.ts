@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { parseESPNLeaderboard } from "@/lib/espn-api";
+import { parseESPNLeaderboard, parseEventMeta } from "@/lib/espn-api";
 
 export const revalidate = 60;
 
@@ -22,11 +22,15 @@ export async function GET() {
 
     const data = await res.json();
     const golfers = parseESPNLeaderboard(data);
+    const { eventStatus, nextEventDate, eventName } = parseEventMeta(data);
 
     return NextResponse.json({
       golfers,
       error: false,
       lastFetched: new Date().toISOString(),
+      eventStatus,
+      nextEventDate,
+      eventName,
     });
   } catch {
     return NextResponse.json(

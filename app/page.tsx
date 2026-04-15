@@ -7,12 +7,14 @@ import PointsEarnedPanel from "@/components/PointsEarnedPanel";
 import CalcuttaLeaderboard from "@/components/CalcuttaLeaderboard";
 import PointsAdminModal from "@/components/PointsAdminModal";
 import PointsEditModal from "@/components/PointsEditModal";
-import { GolferResult } from "@/lib/espn-api";
+import { GolferResult, EventStatus } from "@/lib/espn-api";
 import { PointEvent } from "@/lib/points-rules";
 
 export default function Home() {
   const [golfers, setGolfers] = useState<GolferResult[]>([]);
   const [lastFetched, setLastFetched] = useState<string | null>(null);
+  const [eventStatus, setEventStatus] = useState<EventStatus>("complete");
+  const [nextEventDate, setNextEventDate] = useState<string | null>(null);
   const [pointEvents, setPointEvents] = useState<PointEvent[]>([]);
   const [showAdmin, setShowAdmin] = useState(false);
   const [editingEvent, setEditingEvent] = useState<PointEvent | null>(null);
@@ -23,6 +25,8 @@ export default function Home() {
       const data = await res.json();
       if (data.golfers) setGolfers(data.golfers);
       if (data.lastFetched) setLastFetched(data.lastFetched);
+      if (data.eventStatus) setEventStatus(data.eventStatus);
+      if (data.nextEventDate !== undefined) setNextEventDate(data.nextEventDate);
     } catch { /* silently ignore */ }
   }, []);
 
@@ -70,7 +74,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header lastFetched={lastFetched} onAdminClick={() => setShowAdmin(true)} />
+      <Header lastFetched={lastFetched} onAdminClick={() => setShowAdmin(true)} eventStatus={eventStatus} nextEventDate={nextEventDate} />
 
       <main className="flex-1 p-3 md:p-4 overflow-x-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 max-w-[1600px] mx-auto">
