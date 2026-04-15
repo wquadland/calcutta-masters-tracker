@@ -414,9 +414,11 @@ export default function PointsAdminModal({ onClose, onAdd }: Props) {
                   <div className="space-y-3">
                     {groups.filter((g) =>
                       g.golfer.toLowerCase().includes(golferSearch.toLowerCase()) &&
-                      g.slots.some((s) => s.assignedByMember === loggedInMember)
+                      (g.isDemo || g.slots.some((s) => s.assignedByMember === loggedInMember))
                     ).sort((a, b) => a.team.localeCompare(b.team)).map((group) => {
-                      const mySlots = group.slots.filter((s) => s.assignedByMember === loggedInMember);
+                      const mySlots = group.isDemo
+                        ? group.slots.slice(0, 1)  // show one representative slot per demo event
+                        : group.slots.filter((s) => s.assignedByMember === loggedInMember);
                       const allLogged = mySlots.every((s) => s.alreadyLogged || loggedSlotIds.has(s.id));
                       return (
                         <div
